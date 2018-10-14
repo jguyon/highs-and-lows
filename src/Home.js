@@ -21,8 +21,8 @@ const Home = ({ onPlay, onAbout }) => (
 );
 
 Home.propTypes = {
-  onPlay: PropTypes.func,
-  onAbout: PropTypes.func
+  onPlay: PropTypes.func.isRequired,
+  onAbout: PropTypes.func.isRequired
 };
 
 export default Home;

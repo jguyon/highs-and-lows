@@ -14,7 +14,7 @@ const About = ({ onBack }) => (
 );
 
 About.propTypes = {
-  onBack: PropTypes.func
+  onBack: PropTypes.func.isRequired
 };
 
 export default About;

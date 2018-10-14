@@ -1,20 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Root, Card, CardTitle, Row, RowBtn } from "../Page";
+import CountDown from "./CountDown";
 
-const Game = ({ onBack }) => (
-  <Root>
-    <Card>
-      <CardTitle>to be written</CardTitle>
-    </Card>
-    <Row>
-      <RowBtn onClick={onBack}>BACK</RowBtn>
-    </Row>
-  </Root>
-);
+const Game = ({ onBack }) => <CountDown onBack={onBack} onFinish={() => {}} />;
 
 Game.propTypes = {
-  onBack: PropTypes.func
+  onBack: PropTypes.func.isRequired
 };
 
 export default Game;
