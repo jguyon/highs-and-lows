@@ -31,9 +31,7 @@ const CardRoot = ({ isRed, onClick, children }) => {
     styles["quadrant"]
   ];
 
-  if (onClick === undefined) {
-    return <div className={classes.join(" ")}>{children}</div>;
-  } else {
+  if (onClick) {
     return (
       <button
         type="button"
@@ -47,6 +45,8 @@ const CardRoot = ({ isRed, onClick, children }) => {
         {children}
       </button>
     );
+  } else {
+    return <div className={classes.join(" ")}>{children}</div>;
   }
 };
 

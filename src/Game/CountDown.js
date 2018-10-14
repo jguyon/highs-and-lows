@@ -11,7 +11,10 @@ class CountDown extends React.Component {
     onFinish: PropTypes.func.isRequired
   };
 
-  state = { status: STATUS_COUNTING, remaining: 3 };
+  state = {
+    status: STATUS_COUNTING,
+    remaining: 3
+  };
 
   componentDidMount() {
     const updater = ({ status, remaining }) => {
