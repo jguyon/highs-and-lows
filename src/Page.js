@@ -1,12 +1,8 @@
 import React from "react";
-import styles from "./Page.module.css";
 import PropTypes from "prop-types";
+import "./Page.css";
 
-const Root = ({ children }) => (
-  <div className={[styles["root"], styles["column"], styles["pad"]].join(" ")}>
-    {children}
-  </div>
-);
+const Root = ({ children }) => <div className="page">{children}</div>;
 
 Root.propTypes = {
   children: PropTypes.node
@@ -20,51 +16,32 @@ const Clubs = () => <>&clubs;</>;
 
 const Diamonds = () => <>&diams;</>;
 
-const CardRoot = ({ isRed, onClick, children }) => {
-  const classes = [
-    styles["column__item"],
-    styles["column__item--grow"],
-    styles["column"],
-    styles["box"],
-    isRed ? styles["box--red"] : styles["box--black"],
-    styles["pad"],
-    styles["quadrant"]
-  ];
+const CardRoot = ({ color, onClick, children }) => {
+  const baseClassName = `page__item page__item--expand page__card page__card--${color}`;
 
   if (onClick) {
     return (
       <button
         type="button"
         onClick={onClick}
-        className={[
-          ...classes,
-          styles["button-reset"],
-          styles["box--clickable"]
-        ].join(" ")}
+        className={`${baseClassName} page__card--clickable`}
       >
         {children}
       </button>
     );
   } else {
-    return <div className={classes.join(" ")}>{children}</div>;
+    return <div className={baseClassName}>{children}</div>;
   }
 };
 
 const CardCorner = ({ direction, children }) => (
-  <div
-    className={[
-      styles["quadrant__corner"],
-      styles[`quadrant__corner--${direction}`],
-      styles["pad"],
-      styles["big"]
-    ].join(" ")}
-  >
+  <div className={`page__card__corner page__card__corner--${direction}`}>
     {children}
   </div>
 );
 
 const Card = ({ suit, onClick, children }) => {
-  const isRed = suit === "hearts" || suit === "diamonds";
+  const color = suit === "hearts" || suit === "diamonds" ? "red" : "black";
 
   let corner = null;
   if (suit === "spades") {
@@ -78,7 +55,7 @@ const Card = ({ suit, onClick, children }) => {
   }
 
   return (
-    <CardRoot isRed={isRed} onClick={onClick}>
+    <CardRoot color={color} onClick={onClick}>
       {corner === null ? null : (
         <>
           <CardCorner direction="tl">{corner}</CardCorner>
@@ -99,9 +76,7 @@ Card.propTypes = {
 };
 
 const CardTitle = ({ children }) => (
-  <h1 className={[styles["column__item"], styles["big"]].join(" ")}>
-    {children}
-  </h1>
+  <h1 className="page__card__item page__title">{children}</h1>
 );
 
 CardTitle.propTypes = {
@@ -109,9 +84,7 @@ CardTitle.propTypes = {
 };
 
 const Row = ({ children }) => (
-  <div className={[styles["column__item"], styles["row"]].join(" ")}>
-    {children}
-  </div>
+  <div className="page__item page__row">{children}</div>
 );
 
 Row.propTypes = {
@@ -122,15 +95,7 @@ const RowBtn = ({ onClick, children }) => (
   <button
     type="button"
     onClick={onClick}
-    className={[
-      styles["row__item"],
-      styles["row__item--grow"],
-      styles["button-reset"],
-      styles["box"],
-      styles["box--black"],
-      styles["box--clickable"],
-      styles["small-pad"]
-    ].join(" ")}
+    className="page__row__item page__button"
   >
     {children}
   </button>
