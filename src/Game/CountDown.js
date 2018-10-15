@@ -30,6 +30,8 @@ class CountDown extends React.Component {
     const callback = () => {
       if (this.state.status === STATUS_FINISHED) {
         clearInterval(this.intervalId);
+        this.intervalId = null;
+
         this.props.onFinish();
       }
     };
@@ -40,7 +42,9 @@ class CountDown extends React.Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.intervalId);
+    if (this.intervalId !== null) {
+      clearInterval(this.intervalId);
+    }
   }
 
   render() {

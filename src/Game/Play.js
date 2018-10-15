@@ -117,6 +117,8 @@ class Play extends React.Component {
     const callback = () => {
       if (this.state.status === STATUS_FINISHED) {
         clearInterval(this.intervalId);
+        this.intervalId = null;
+
         this.props.onFinish({
           drawnCards: this.state.drawnCards,
           count: this.state.count
@@ -130,7 +132,9 @@ class Play extends React.Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.intervalId);
+    if (this.intervalId !== null) {
+      clearInterval(this.intervalId);
+    }
   }
 
   handleCardClick = () => {
