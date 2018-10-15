@@ -18,24 +18,6 @@ const RANK_ACE = 14;
 
 const rankToText = rank => {
   switch (rank) {
-    case RANK_TWO:
-      return "2";
-    case RANK_THREE:
-      return "3";
-    case RANK_FOUR:
-      return "4";
-    case RANK_FIVE:
-      return "5";
-    case RANK_SIX:
-      return "6";
-    case RANK_SEVEN:
-      return "7";
-    case RANK_EIGHT:
-      return "8";
-    case RANK_NINE:
-      return "9";
-    case RANK_TEN:
-      return "10";
     case RANK_JACK:
       return "J";
     case RANK_QUEEN:
@@ -45,7 +27,7 @@ const rankToText = rank => {
     case RANK_ACE:
       return "A";
     default:
-      throw new Error("invalid card rank");
+      return rank.toString();
   }
 };
 
@@ -164,6 +146,16 @@ class Play extends React.Component {
       }
     });
   };
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const { props: prevProps, state: prevState } = this;
+
+    return (
+      nextProps.onBack !== prevProps.onBack ||
+      nextState.currentCard !== prevState.currentCard ||
+      nextState.status !== prevState.status
+    );
+  }
 
   render() {
     return (
