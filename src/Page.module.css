@@ -75,6 +75,7 @@
 .button-reset {
   border: 0;
   color: inherit;
+  font-family: inherit;
   font-size: inherit;
   line-height: inherit;
   background-color: transparent;
