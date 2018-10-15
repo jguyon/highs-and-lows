@@ -113,6 +113,7 @@ class Play extends React.Component {
     this.state = {
       status: STATUS_PLAYING,
       remaining: DURATION,
+      drawnCards: 1,
       currentCard,
       count
     };
@@ -134,7 +135,10 @@ class Play extends React.Component {
     const callback = () => {
       if (this.state.status === STATUS_FINISHED) {
         clearInterval(this.intervalId);
-        this.props.onFinish(this.state.count);
+        this.props.onFinish({
+          drawnCards: this.state.drawnCards,
+          count: this.state.count
+        });
       }
     };
 
@@ -150,9 +154,10 @@ class Play extends React.Component {
   handleCardClick = () => {
     const nextCard = randomCard();
 
-    this.setState(({ status, count }) => {
+    this.setState(({ status, drawnCards, count }) => {
       if (status === STATUS_PLAYING) {
         return {
+          drawnCards: drawnCards + 1,
           currentCard: nextCard,
           count: nextCount(count, nextCard)
         };

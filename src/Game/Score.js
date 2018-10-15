@@ -2,11 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Root, Card, CardTitle, Row, RowBtn } from "../Page";
 
-const Score = ({ userCount, realCount, onBack }) => (
+const Score = ({ drawnCards, userCount, realCount, onBack }) => (
   <Root>
     <Card>
       <CardTitle>
-        {userCount === realCount ? "you counted right" : "you counted wrong"}
+        you counted
+        <br />
+        {drawnCards} {drawnCards === 1 ? "card" : "cards"}
+        <br />
+        {userCount === realCount ? "right" : "wrong"}
       </CardTitle>
     </Card>
     <Row>
@@ -16,6 +20,7 @@ const Score = ({ userCount, realCount, onBack }) => (
 );
 
 Score.propTypes = {
+  drawnCards: PropTypes.number.isRequired,
   userCount: PropTypes.number.isRequired,
   realCount: PropTypes.number.isRequired,
   onBack: PropTypes.func.isRequired
