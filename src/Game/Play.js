@@ -165,10 +165,10 @@ class Play extends React.Component {
     return (
       <Root>
         <Card
+          isButton
           suit={this.state.currentCard.suit}
-          onClick={
-            this.state.status === STATUS_PLAYING ? this.handleCardClick : null
-          }
+          disabled={this.state.status !== STATUS_PLAYING}
+          onClick={this.handleCardClick}
         >
           <CardTitle>{rankToText(this.state.currentCard.rank)}</CardTitle>
         </Card>
