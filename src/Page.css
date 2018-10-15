@@ -116,6 +116,7 @@
 .page__card--clickable:not(:active),
 .page__button:not(:active) {
   transition: background-color 0.25s ease-out;
+  transition: box-shadow 0.1s ease-in;
 }
 .page__card--clickable:active,
 .page__button:active {
