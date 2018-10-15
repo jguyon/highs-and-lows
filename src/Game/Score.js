@@ -10,7 +10,7 @@ const Score = ({ drawnCards, userCount, realCount, onBack }) => (
         <br />
         {drawnCards} {drawnCards === 1 ? "card" : "cards"}
         <br />
-        {userCount === realCount ? "right" : "wrong"}
+        {userCount === realCount ? "right :)" : "wrong :("}
       </CardTitle>
     </Card>
     <Row>

@@ -140,3 +140,7 @@
   font-size: 2rem;
   font-weight: bold;
 }
+
+.page__text {
+  text-align: left;
+}

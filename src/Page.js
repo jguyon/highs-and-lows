@@ -84,6 +84,12 @@ const CardTitle = ({ children, ...props }) => (
   </h1>
 );
 
+const CardText = ({ children, ...props }) => (
+  <p {...props} className="page__card__item page__text">
+    {children}
+  </p>
+);
+
 const Row = ({ children, ...props }) => (
   <div {...props} className="page__item page__row">
     {children}
@@ -96,4 +102,4 @@ const RowBtn = ({ children, ...props }) => (
   </button>
 );
 
-export { Root, Card, CardTitle, Row, RowBtn };
+export { Root, Card, CardText, CardTitle, Row, RowBtn };

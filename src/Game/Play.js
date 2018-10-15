@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { GAME_DURATION_SECONDS } from "../constants";
 import { Root, Card, CardTitle, Row, RowBtn } from "../Page";
 
 const RANK_TWO = 2;
@@ -74,8 +75,6 @@ const nextCount = (prevCount, card) => {
   }
 };
 
-const DURATION = process.env.NODE_ENV === "production" ? 21 : 5;
-
 const STATUS_PLAYING = "PLAYING";
 const STATUS_PENDING = "PENDING";
 const STATUS_FINISHED = "FINISHED";
@@ -94,7 +93,7 @@ class Play extends React.Component {
 
     this.state = {
       status: STATUS_PLAYING,
-      remaining: DURATION,
+      remaining: GAME_DURATION_SECONDS,
       drawnCards: 1,
       currentCard,
       count
