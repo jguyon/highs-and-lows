@@ -52,9 +52,11 @@ const Diamonds = () => (
 );
 
 const cardClassName = suit => {
-  const color = suit === "hearts" || suit === "diamonds" ? "red" : "black";
+  const baseClassName = `page__item page__item--expand page__card`;
 
-  return `page__item page__item--expand page__card page__card--${color}`;
+  return suit === "hearts" || suit === "diamonds"
+    ? `${baseClassName} page__red`
+    : baseClassName;
 };
 
 const cardCornerClassName = direction =>
