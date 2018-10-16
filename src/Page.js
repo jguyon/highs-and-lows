@@ -51,6 +51,8 @@ const cardCorners = suit => {
   }
 };
 
+const cardMain = children => <div className="page__card__main">{children}</div>;
+
 const Card = ({ isButton, suit, children, ...props }) => {
   if (isButton) {
     return (
@@ -60,14 +62,14 @@ const Card = ({ isButton, suit, children, ...props }) => {
         className={`${cardClassName(suit)} page__card--clickable`}
       >
         {cardCorners(suit)}
-        {children}
+        {cardMain(children)}
       </button>
     );
   } else {
     return (
       <div {...props} className={cardClassName(suit)}>
         {cardCorners(suit)}
-        {children}
+        {cardMain(children)}
       </div>
     );
   }
@@ -79,13 +81,13 @@ Card.propTypes = {
 };
 
 const CardTitle = ({ children, ...props }) => (
-  <h1 {...props} className="page__card__item page__title">
+  <h1 {...props} className="page__card__main__item page__title">
     {children}
   </h1>
 );
 
 const CardText = ({ children, ...props }) => (
-  <p {...props} className="page__card__item page__text">
+  <p {...props} className="page__card__main__item page__text">
     {children}
   </p>
 );
@@ -102,4 +104,4 @@ const RowBtn = ({ children, ...props }) => (
   </button>
 );
 
-export { Root, Card, CardText, CardTitle, Row, RowBtn };
+export { Root, Card, CardTitle, CardText, Row, RowBtn };
