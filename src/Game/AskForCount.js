@@ -25,12 +25,14 @@ class AskForCount extends React.Component {
     return (
       <Root>
         <Card>
-          <CardTitle>{this.state.count}</CardTitle>
+          <CardTitle>
+            {this.state.count > 0 ? `+${this.state.count}` : this.state.count}
+          </CardTitle>
         </Card>
         <Row>
-          <RowBtn onClick={this.handleMinusClick}>-</RowBtn>
-          <RowBtn onClick={this.handleOkClick}>OK</RowBtn>
           <RowBtn onClick={this.handlePlusClick}>+</RowBtn>
+          <RowBtn onClick={this.handleOkClick}>OK</RowBtn>
+          <RowBtn onClick={this.handleMinusClick}>-</RowBtn>
         </Row>
       </Root>
     );
