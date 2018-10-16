@@ -36,10 +36,15 @@
 }
 
 .page__card__corner {
-  font-size: 2rem;
   margin: 1rem;
 
   position: absolute;
+}
+
+.page__card__corner,
+.page__card__corner__icon {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .page__card__corner--tl {
@@ -124,9 +129,17 @@
   color: #000;
 }
 
+.page__card--black .page__card__corner__icon__fill {
+  fill: #000;
+}
+
 .page__card--red {
   border-color: #e7040f;
   color: #e7040f;
+}
+
+.page__card--red .page__card__corner__icon__fill {
+  fill: #e7040f;
 }
 
 .page__card--clickable,
