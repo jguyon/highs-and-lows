@@ -129,12 +129,18 @@
   color: #e7040f;
 }
 
-.page__card--clickable:not(:active),
-.page__button:not(:active) {
-  transition: background-color 0.25s ease-out, box-shadow 0.1s ease-in;
+.page__card--clickable,
+.page__button {
+  transition: box-shadow 0.1s ease-in;
 }
-.page__card--clickable:active,
-.page__button:active {
+.page__card--clickable:not(:active),
+.page__card--clickable:not(:enabled),
+.page__button:not(:active),
+.page__button:not(:enabled) {
+  transition: box-shadow 0.1s ease-in, background-color 0.25s ease-out;
+}
+.page__card--clickable:enabled:active,
+.page__button:enabled:active {
   background-color: rgba(53, 126, 221, 0.1);
 }
 .page__card--clickable:focus,
