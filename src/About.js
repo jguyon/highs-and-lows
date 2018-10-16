@@ -23,6 +23,11 @@ const About = ({ onBack }) => (
         After {GAME_DURATION_SECONDS} seconds, you will be asked for the count.
         Did you get it right? :)
       </CardText>
+      <CardText>
+        Icons were adapted from works by{" "}
+        <a href="https://www.flaticon.com/authors/smashicons">Smashicons</a>{" "}
+        from <a href="https://www.flaticon.com/">www.flaticon.com</a>.
+      </CardText>
     </Card>
     <Row onClick={onBack}>
       <RowBtn onClick={onBack}>BACK</RowBtn>
