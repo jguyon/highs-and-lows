@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Root, Card, CardTitle, Row, RowBtn } from "../Page";
+import { Root, Card, CardTitle, Row, RowBtn, Green, Red } from "../Page";
 
 const Score = ({ drawnCards, userCount, realCount, onBack }) => (
   <Root>
@@ -10,7 +10,11 @@ const Score = ({ drawnCards, userCount, realCount, onBack }) => (
         <br />
         {drawnCards} {drawnCards === 1 ? "card" : "cards"}
         <br />
-        {userCount === realCount ? "right :)" : "wrong :("}
+        {userCount === realCount ? (
+          <Green>right :)</Green>
+        ) : (
+          <Red>wrong :(</Red>
+        )}
       </CardTitle>
     </Card>
     <Row>
