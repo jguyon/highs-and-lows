@@ -163,15 +163,15 @@
   text-align: left;
 }
 
-.page__text a,
-.page__text a:visited {
+.page__link,
+.page__link:visited {
   color: #00449e;
-  text-decoration: underline;
-}
-.page__text:hover {
   text-decoration: none;
 }
-.page__text a:focus {
+.page__link:hover {
+  text-decoration: underline;
+}
+.page__link:focus {
   outline: 1px dotted currentColor;
 }
 

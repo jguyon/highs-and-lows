@@ -141,6 +141,12 @@ const RowBtn = ({ children, ...props }) => (
   </button>
 );
 
+const Link = ({ children, ...props }) => (
+  <a {...props} className="page__link">
+    {children}
+  </a>
+);
+
 const Green = ({ children, ...props }) => (
   <span {...props} className="page__green">
     {children}
@@ -153,4 +159,4 @@ const Red = ({ children, ...props }) => (
   </span>
 );
 
-export { Root, Card, CardTitle, CardText, Row, RowBtn, Green, Red };
+export { Root, Card, CardTitle, CardText, Row, RowBtn, Link, Green, Red };

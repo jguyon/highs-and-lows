@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { GAME_DURATION_SECONDS } from "./constants";
-import { Root, Card, CardText, Row, RowBtn } from "./Page";
+import { Root, Card, CardText, Row, RowBtn, Link } from "./Page";
 
 const About = ({ onBack }) => (
   <Root>
@@ -25,8 +25,10 @@ const About = ({ onBack }) => (
       </CardText>
       <CardText>
         Icons were adapted from works by{" "}
-        <a href="https://www.flaticon.com/authors/smashicons">Smashicons</a>{" "}
-        from <a href="https://www.flaticon.com/">www.flaticon.com</a>.
+        <Link href="https://www.flaticon.com/authors/smashicons">
+          Smashicons
+        </Link>{" "}
+        from <Link href="https://www.flaticon.com/">www.flaticon.com</Link>.
       </CardText>
     </Card>
     <Row onClick={onBack}>
