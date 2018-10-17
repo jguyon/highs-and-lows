@@ -24,7 +24,10 @@ const About = ({ onBack }) => (
         Did you get it right? :)
       </CardText>
       <CardText>
-        Icons were adapted from works by{" "}
+        The source code is available on{" "}
+        <Link href="https://github.com/jguyon/highs-and-lows">GitHub</Link>.
+        <br />
+        All icons were adapted from works by{" "}
         <Link href="https://www.flaticon.com/authors/smashicons">
           Smashicons
         </Link>{" "}
