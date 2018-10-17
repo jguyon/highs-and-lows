@@ -47,11 +47,8 @@ class Game extends React.Component {
         if (phase.type === PHASE_ASKING_FOR_COUNT) {
           let result = "lost";
           if (userCount === phase.realCount) {
-            if (!highScore || phase.drawnCards > highScore) {
-              result = "highscore";
-            } else {
-              result = "won";
-            }
+            result =
+              !highScore || phase.drawnCards > highScore ? "highscore" : "won";
           }
 
           return {

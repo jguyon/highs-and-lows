@@ -62,7 +62,7 @@ const cardClassName = suit => {
 const cardCornerClassName = direction =>
   `page__card__corner page__card__corner--${direction}`;
 
-const cardCorners = suit => {
+const renderCardCorners = suit => {
   let corner = null;
   if (suit === "spades") {
     corner = <Spades />;
@@ -88,7 +88,9 @@ const cardCorners = suit => {
   }
 };
 
-const cardMain = children => <div className="page__card__main">{children}</div>;
+const renderCardMain = children => (
+  <div className="page__card__main">{children}</div>
+);
 
 const Card = ({ isButton, suit, children, ...props }) => {
   if (isButton) {
@@ -98,15 +100,15 @@ const Card = ({ isButton, suit, children, ...props }) => {
         type="button"
         className={`${cardClassName(suit)} page__card--clickable`}
       >
-        {cardCorners(suit)}
-        {cardMain(children)}
+        {renderCardCorners(suit)}
+        {renderCardMain(children)}
       </button>
     );
   } else {
     return (
       <div {...props} className={cardClassName(suit)}>
-        {cardCorners(suit)}
-        {cardMain(children)}
+        {renderCardCorners(suit)}
+        {renderCardMain(children)}
       </div>
     );
   }

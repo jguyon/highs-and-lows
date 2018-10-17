@@ -49,18 +49,21 @@ class App extends React.Component {
   };
 
   render() {
-    if (this.state.page === PAGE_HOME) {
-      return <Home onPlay={this.handlePlay} onAbout={this.handleAbout} />;
-    } else if (this.state.page === PAGE_ABOUT) {
-      return <About onBack={this.handleBack} />;
-    } else if (this.state.page === PAGE_GAME) {
-      return (
-        <Game
-          highScore={this.state.highScore}
-          onNewHighScore={this.handleNewHighScore}
-          onBack={this.handleBack}
-        />
-      );
+    switch (this.state.page) {
+      case PAGE_HOME:
+        return <Home onPlay={this.handlePlay} onAbout={this.handleAbout} />;
+      case PAGE_ABOUT:
+        return <About onBack={this.handleBack} />;
+      case PAGE_GAME:
+        return (
+          <Game
+            highScore={this.state.highScore}
+            onNewHighScore={this.handleNewHighScore}
+            onBack={this.handleBack}
+          />
+        );
+      default:
+        throw new Error(`invalid page: ${this.state.page}`);
     }
   }
 }
