@@ -21,6 +21,7 @@ class Game extends React.Component {
     phase: PHASE_COUNTDOWN,
     drawnCards: null,
     realCount: null,
+    prevHighScore: null,
     result: null
   };
 
@@ -50,6 +51,7 @@ class Game extends React.Component {
 
         return {
           phase: PHASE_SCORING,
+          prevHighScore: highScore,
           result
         };
       },
@@ -79,7 +81,7 @@ class Game extends React.Component {
       return (
         <Score
           result={this.state.result}
-          highScore={this.props.highScore}
+          prevHighScore={this.state.prevHighScore}
           drawnCards={this.state.drawnCards}
           realCount={this.state.realCount}
           onBack={this.props.onBack}

@@ -12,7 +12,7 @@ import {
   Gray
 } from "../Page";
 
-const Score = ({ result, highScore, drawnCards, realCount, onBack }) => (
+const Score = ({ result, prevHighScore, drawnCards, realCount, onBack }) => (
   <Root>
     <Card>
       <CardTitle>
@@ -28,12 +28,22 @@ const Score = ({ result, highScore, drawnCards, realCount, onBack }) => (
           <strong>{realCount > 0 ? `+${realCount}` : realCount}</strong>
         </CardSubTitle>
       ) : result === "highscore" ? (
-        <CardSubTitle>new high score!</CardSubTitle>
-      ) : highScore ? (
+        <CardSubTitle>
+          new high score!
+          {prevHighScore ? (
+            <>
+              <br />
+              previous was <strong>{prevHighScore}</strong>{" "}
+              {prevHighScore === 1 ? "card" : "cards"}
+            </>
+          ) : null}
+        </CardSubTitle>
+      ) : prevHighScore ? (
         <CardSubTitle>
           high score is
           <br />
-          <strong>{highScore}</strong> {highScore === 1 ? "card" : "cards"}
+          <strong>{prevHighScore}</strong>{" "}
+          {prevHighScore === 1 ? "card" : "cards"}
         </CardSubTitle>
       ) : null}
     </Card>
@@ -45,7 +55,7 @@ const Score = ({ result, highScore, drawnCards, realCount, onBack }) => (
 
 Score.propTypes = {
   result: PropTypes.oneOf(["won", "lost", "highscore"]).isRequired,
-  highScore: PropTypes.number,
+  prevHighScore: PropTypes.number,
   drawnCards: PropTypes.number.isRequired,
   realCount: PropTypes.number.isRequired,
   onBack: PropTypes.func.isRequired
