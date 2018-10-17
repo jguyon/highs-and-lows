@@ -57,10 +57,11 @@ class Game extends React.Component {
           return {
             phase: {
               type: PHASE_SCORING,
+              result,
+              prevHighScore: highScore,
               drawnCards: phase.drawnCards,
               realCount: phase.realCount,
-              prevHighScore: highScore,
-              result
+              userCount
             }
           };
         }
@@ -104,11 +105,12 @@ class Game extends React.Component {
             prevHighScore={phase.prevHighScore}
             drawnCards={phase.drawnCards}
             realCount={phase.realCount}
+            userCount={phase.userCount}
             onBack={onBack}
           />
         );
       default:
-        return null;
+        throw new Error(`invalid phase type: ${phase.type}`);
     }
   }
 }

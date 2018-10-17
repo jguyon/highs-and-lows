@@ -12,40 +12,71 @@ import {
   Gray
 } from "../Page";
 
-const Score = ({ result, prevHighScore, drawnCards, realCount, onBack }) => (
-  <Root>
-    <Card>
-      <CardTitle>
-        you counted
-        <br />
-        <Gray>{drawnCards}</Gray> {drawnCards === 1 ? "card" : "cards"}
-        <br />
-        {result === "lost" ? <Red>wrong :(</Red> : <Green>right :)</Green>}
-      </CardTitle>
-      {result === "lost" ? (
-        <CardSubTitle>
-          the count was{" "}
-          <strong>{realCount > 0 ? `+${realCount}` : realCount}</strong>
-        </CardSubTitle>
-      ) : result === "highscore" ? (
+const renderCards = cardCount => (cardCount === 1 ? "card" : "cards");
+
+const renderCount = count => (count > 0 ? `+${count}` : `${count}`);
+
+const renderSubTitle = (result, prevHighScore, realCount, userCount) => {
+  switch (result) {
+    case "highscore":
+      return (
         <CardSubTitle>
           new high score!
           {prevHighScore ? (
             <>
               <br />
               previous was <strong>{prevHighScore}</strong>{" "}
-              {prevHighScore === 1 ? "card" : "cards"}
+              {renderCards(prevHighScore)}
             </>
           ) : null}
         </CardSubTitle>
-      ) : prevHighScore ? (
+      );
+
+    case "won":
+      if (prevHighScore) {
+        return (
+          <CardSubTitle>
+            high score is
+            <br />
+            <strong>{prevHighScore}</strong> {renderCards(prevHighScore)}
+          </CardSubTitle>
+        );
+      } else {
+        return null;
+      }
+
+    case "lost":
+      return (
         <CardSubTitle>
-          high score is
+          you guessed <strong>{renderCount(userCount)}</strong>
           <br />
-          <strong>{prevHighScore}</strong>{" "}
-          {prevHighScore === 1 ? "card" : "cards"}
+          the count was <strong>{renderCount(realCount)}</strong>
         </CardSubTitle>
-      ) : null}
+      );
+
+    default:
+      throw new Error(`invalid result: ${result}`);
+  }
+};
+
+const Score = ({
+  result,
+  prevHighScore,
+  drawnCards,
+  realCount,
+  userCount,
+  onBack
+}) => (
+  <Root>
+    <Card>
+      <CardTitle>
+        you counted
+        <br />
+        <Gray>{drawnCards}</Gray> {renderCards(drawnCards)}
+        <br />
+        {result === "lost" ? <Red>wrong :(</Red> : <Green>right :)</Green>}
+      </CardTitle>
+      {renderSubTitle(result, prevHighScore, realCount, userCount)}
     </Card>
     <Row>
       <RowBtn onClick={onBack}>BACK</RowBtn>
@@ -58,6 +89,7 @@ Score.propTypes = {
   prevHighScore: PropTypes.number,
   drawnCards: PropTypes.number.isRequired,
   realCount: PropTypes.number.isRequired,
+  userCount: PropTypes.number.isRequired,
   onBack: PropTypes.func.isRequired
 };
 
