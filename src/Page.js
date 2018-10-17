@@ -123,6 +123,12 @@ const CardTitle = ({ children, ...props }) => (
   </h1>
 );
 
+const CardSubTitle = ({ children, ...props }) => (
+  <div {...props} className="page__card__main__item page__subtitle">
+    {children}
+  </div>
+);
+
 const CardText = ({ children, ...props }) => (
   <p {...props} className="page__card__main__item page__text">
     {children}
@@ -159,4 +165,22 @@ const Red = ({ children, ...props }) => (
   </span>
 );
 
-export { Root, Card, CardTitle, CardText, Row, RowBtn, Link, Green, Red };
+const Gray = ({ children, ...props }) => (
+  <span {...props} className="page__gray">
+    {children}
+  </span>
+);
+
+export {
+  Root,
+  Card,
+  CardTitle,
+  CardSubTitle,
+  CardText,
+  Row,
+  RowBtn,
+  Link,
+  Green,
+  Red,
+  Gray
+};

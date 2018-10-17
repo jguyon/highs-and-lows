@@ -19,7 +19,7 @@ class Game extends React.Component {
     phase: PHASE_COUNTDOWN,
     drawnCards: null,
     realCount: null,
-    userCount: null
+    result: null
   };
 
   handleCountDownFinish = () => {
@@ -35,10 +35,10 @@ class Game extends React.Component {
   };
 
   handleAskForCountFinish = userCount => {
-    this.setState({
+    this.setState(({ realCount }) => ({
       phase: PHASE_SCORING,
-      userCount
-    });
+      result: userCount === realCount ? "won" : "lost"
+    }));
   };
 
   render() {
@@ -58,8 +58,8 @@ class Game extends React.Component {
     } else if (this.state.phase === PHASE_SCORING) {
       return (
         <Score
+          result={this.state.result}
           drawnCards={this.state.drawnCards}
-          userCount={this.state.userCount}
           realCount={this.state.realCount}
           onBack={this.props.onBack}
         />

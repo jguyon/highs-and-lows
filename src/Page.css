@@ -159,6 +159,11 @@
   font-weight: bold;
 }
 
+.page__subtitle {
+  font-size: 1.5rem;
+  color: #777;
+}
+
 .page__text {
   text-align: left;
 }
@@ -181,4 +186,8 @@
 
 .page__green {
   color: #137752;
+}
+
+.page__gray {
+  color: #777;
 }
