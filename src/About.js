@@ -18,7 +18,7 @@ const About = ({ onBack }) => (
         8 or 9. Suits don't matter.
       </CardText>
       <CardText>
-        Click or tap each card to draw the next one.
+        Tap each card to draw the next one.
         <br />
         After {GAME_DURATION_SECONDS} seconds, you will be asked for the count.
         Did you get it right? :)
