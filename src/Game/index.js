@@ -18,75 +18,97 @@ class Game extends React.Component {
   };
 
   state = {
-    phase: PHASE_COUNTDOWN,
-    drawnCards: null,
-    realCount: null,
-    prevHighScore: null,
-    result: null
+    phase: {
+      type: PHASE_COUNTDOWN
+    }
   };
 
   handleCountDownFinish = () => {
-    this.setState({ phase: PHASE_PLAY });
+    this.setState({
+      phase: {
+        type: PHASE_PLAY
+      }
+    });
   };
 
   handlePlayFinish = ({ drawnCards, count: realCount }) => {
     this.setState({
-      phase: PHASE_ASKING_FOR_COUNT,
-      drawnCards,
-      realCount
+      phase: {
+        type: PHASE_ASKING_FOR_COUNT,
+        drawnCards,
+        realCount
+      }
     });
   };
 
   handleAskForCountFinish = userCount => {
     this.setState(
-      ({ drawnCards, realCount }, { highScore }) => {
-        let result = "lost";
-        if (userCount === realCount) {
-          if (!highScore || drawnCards > highScore) {
-            result = "highscore";
-          } else {
-            result = "won";
+      ({ phase }, { highScore }) => {
+        if (phase.type === PHASE_ASKING_FOR_COUNT) {
+          let result = "lost";
+          if (userCount === phase.realCount) {
+            if (!highScore || phase.drawnCards > highScore) {
+              result = "highscore";
+            } else {
+              result = "won";
+            }
           }
-        }
 
-        return {
-          phase: PHASE_SCORING,
-          prevHighScore: highScore,
-          result
-        };
+          return {
+            phase: {
+              type: PHASE_SCORING,
+              drawnCards: phase.drawnCards,
+              realCount: phase.realCount,
+              prevHighScore: highScore,
+              result
+            }
+          };
+        }
       },
       () => {
-        if (this.state.result === "highscore") {
-          this.props.onNewHighScore(this.state.drawnCards);
+        const { phase } = this.state;
+
+        if (phase.type === PHASE_SCORING && phase.result === "highscore") {
+          this.props.onNewHighScore(phase.drawnCards);
         }
       }
     );
   };
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const { props: prevProps, state: prevState } = this;
+
+    return (
+      nextState.phase !== prevState.phase ||
+      nextProps.onBack !== prevProps.onBack
+    );
+  }
+
   render() {
-    if (this.state.phase === PHASE_COUNTDOWN) {
-      return (
-        <CountDown
-          onBack={this.props.onBack}
-          onFinish={this.handleCountDownFinish}
-        />
-      );
-    } else if (this.state.phase === PHASE_PLAY) {
-      return (
-        <Play onBack={this.props.onBack} onFinish={this.handlePlayFinish} />
-      );
-    } else if (this.state.phase === PHASE_ASKING_FOR_COUNT) {
-      return <AskForCount onFinish={this.handleAskForCountFinish} />;
-    } else if (this.state.phase === PHASE_SCORING) {
-      return (
-        <Score
-          result={this.state.result}
-          prevHighScore={this.state.prevHighScore}
-          drawnCards={this.state.drawnCards}
-          realCount={this.state.realCount}
-          onBack={this.props.onBack}
-        />
-      );
+    const { phase } = this.state;
+    const { onBack } = this.props;
+
+    switch (phase.type) {
+      case PHASE_COUNTDOWN:
+        return (
+          <CountDown onBack={onBack} onFinish={this.handleCountDownFinish} />
+        );
+      case PHASE_PLAY:
+        return <Play onBack={onBack} onFinish={this.handlePlayFinish} />;
+      case PHASE_ASKING_FOR_COUNT:
+        return <AskForCount onFinish={this.handleAskForCountFinish} />;
+      case PHASE_SCORING:
+        return (
+          <Score
+            result={phase.result}
+            prevHighScore={phase.prevHighScore}
+            drawnCards={phase.drawnCards}
+            realCount={phase.realCount}
+            onBack={onBack}
+          />
+        );
+      default:
+        return null;
     }
   }
 }
