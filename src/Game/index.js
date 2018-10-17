@@ -12,6 +12,8 @@ const PHASE_SCORING = "SCORING";
 
 class Game extends React.Component {
   static propTypes = {
+    highScore: PropTypes.number,
+    onNewHighScore: PropTypes.func.isRequired,
     onBack: PropTypes.func.isRequired
   };
 
@@ -35,10 +37,28 @@ class Game extends React.Component {
   };
 
   handleAskForCountFinish = userCount => {
-    this.setState(({ realCount }) => ({
-      phase: PHASE_SCORING,
-      result: userCount === realCount ? "won" : "lost"
-    }));
+    this.setState(
+      ({ drawnCards, realCount }, { highScore }) => {
+        let result = "lost";
+        if (userCount === realCount) {
+          if (!highScore || drawnCards > highScore) {
+            result = "highscore";
+          } else {
+            result = "won";
+          }
+        }
+
+        return {
+          phase: PHASE_SCORING,
+          result
+        };
+      },
+      () => {
+        if (this.state.result === "highscore") {
+          this.props.onNewHighScore(this.state.drawnCards);
+        }
+      }
+    );
   };
 
   render() {
@@ -59,6 +79,7 @@ class Game extends React.Component {
       return (
         <Score
           result={this.state.result}
+          highScore={this.props.highScore}
           drawnCards={this.state.drawnCards}
           realCount={this.state.realCount}
           onBack={this.props.onBack}
