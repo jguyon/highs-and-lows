@@ -51,7 +51,13 @@ class App extends React.Component {
   render() {
     switch (this.state.page) {
       case PAGE_HOME:
-        return <Home onPlay={this.handlePlay} onAbout={this.handleAbout} />;
+        return (
+          <Home
+            highScore={this.state.highScore}
+            onPlay={this.handlePlay}
+            onAbout={this.handleAbout}
+          />
+        );
       case PAGE_ABOUT:
         return <About onBack={this.handleBack} />;
       case PAGE_GAME:

@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Root, Card, CardTitle, Row, RowBtn } from "./Page";
+import { Root, Card, CardTitle, CardSubTitle, Row, RowBtn } from "./Page";
 
-const Home = ({ onPlay, onAbout }) => (
+const Home = ({ highScore, onPlay, onAbout }) => (
   <Root>
     <Card>
       <CardTitle>
@@ -12,6 +12,13 @@ const Home = ({ onPlay, onAbout }) => (
         <br />
         lows
       </CardTitle>
+      {highScore ? (
+        <CardSubTitle>
+          high score is
+          <br />
+          <strong>{highScore}</strong> {highScore === 1 ? "card" : "cards"}
+        </CardSubTitle>
+      ) : null}
     </Card>
     <Row>
       <RowBtn onClick={onPlay}>PLAY</RowBtn>
@@ -21,6 +28,7 @@ const Home = ({ onPlay, onAbout }) => (
 );
 
 Home.propTypes = {
+  highScore: PropTypes.number,
   onPlay: PropTypes.func.isRequired,
   onAbout: PropTypes.func.isRequired
 };
