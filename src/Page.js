@@ -126,9 +126,9 @@ const CardTitle = ({ children, ...props }) => (
 );
 
 const CardSubTitle = ({ children, ...props }) => (
-  <div {...props} className="page__card__main__item page__subtitle">
+  <h2 {...props} className="page__card__main__item page__subtitle">
     {children}
-  </div>
+  </h2>
 );
 
 const CardText = ({ children, ...props }) => (
