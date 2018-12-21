@@ -7,41 +7,21 @@ type AskForCountProps = {|
   onFinish: number => void
 |};
 
-type AskForCountState = {|
-  count: number
-|};
+const AskForCount = ({ onFinish }: AskForCountProps) => {
+  const [count, setCount] = React.useState(0);
 
-class AskForCount extends React.Component<AskForCountProps, AskForCountState> {
-  state = { count: 0 };
-
-  handleMinusClick = () => {
-    this.setState(({ count }) => ({ count: count - 1 }));
-  };
-
-  handlePlusClick = () => {
-    this.setState(({ count }) => ({ count: count + 1 }));
-  };
-
-  handleOkClick = () => {
-    this.props.onFinish(this.state.count);
-  };
-
-  render() {
-    return (
-      <Root>
-        <Card>
-          <CardTitle>
-            {this.state.count > 0 ? `+${this.state.count}` : this.state.count}
-          </CardTitle>
-        </Card>
-        <Row>
-          <RowBtn onClick={this.handlePlusClick}>+</RowBtn>
-          <RowBtn onClick={this.handleOkClick}>OK</RowBtn>
-          <RowBtn onClick={this.handleMinusClick}>-</RowBtn>
-        </Row>
-      </Root>
-    );
-  }
-}
+  return (
+    <Root>
+      <Card>
+        <CardTitle>{count > 0 ? `+${count}` : count}</CardTitle>
+      </Card>
+      <Row>
+        <RowBtn onClick={() => setCount(count => count + 1)}>+</RowBtn>
+        <RowBtn onClick={() => onFinish(count)}>OK</RowBtn>
+        <RowBtn onClick={() => setCount(count => count - 1)}>-</RowBtn>
+      </Row>
+    </Root>
+  );
+};
 
 export default AskForCount;
