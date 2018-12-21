@@ -1,62 +1,38 @@
-import React from "react";
-import PropTypes from "prop-types";
+// @flow
+
+import * as React from "react";
 import { GAME_DURATION_SECONDS } from "../constants";
 import { Root, Card, CardTitle, Row, RowBtn } from "../Page";
+import type { Suit } from "../Page";
 
-const RANK_TWO = 2;
-const RANK_THREE = 3;
-const RANK_FOUR = 4;
-const RANK_FIVE = 5;
-const RANK_SIX = 6;
-const RANK_SEVEN = 7;
-const RANK_EIGHT = 8;
-const RANK_NINE = 9;
-const RANK_TEN = 10;
-const RANK_JACK = 11;
-const RANK_QUEEN = 12;
-const RANK_KING = 13;
-const RANK_ACE = 14;
+type Rank = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14;
 
-const rankToText = rank => {
+const rankToText = (rank: Rank) => {
   switch (rank) {
-    case RANK_JACK:
+    case 11:
       return "J";
-    case RANK_QUEEN:
+    case 12:
       return "Q";
-    case RANK_KING:
+    case 13:
       return "K";
-    case RANK_ACE:
+    case 14:
       return "A";
     default:
       return rank.toString();
   }
 };
 
-const SUIT_SPADES = "spades";
-const SUIT_HEARTS = "hearts";
-const SUIT_DIAMONDS = "diamonds";
-const SUIT_CLUBS = "clubs";
+type PlayingCard = {|
+  rank: Rank,
+  suit: Suit
+|};
 
-const cardDeck = [
-  RANK_TWO,
-  RANK_THREE,
-  RANK_FOUR,
-  RANK_FIVE,
-  RANK_SIX,
-  RANK_SEVEN,
-  RANK_EIGHT,
-  RANK_NINE,
-  RANK_TEN,
-  RANK_JACK,
-  RANK_QUEEN,
-  RANK_KING,
-  RANK_ACE
-]
+const cardDeck: PlayingCard[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
   .map(rank => [
-    { rank, suit: SUIT_SPADES },
-    { rank, suit: SUIT_HEARTS },
-    { rank, suit: SUIT_DIAMONDS },
-    { rank, suit: SUIT_CLUBS }
+    { rank, suit: "spades" },
+    { rank, suit: "hearts" },
+    { rank, suit: "diamonds" },
+    { rank, suit: "clubs" }
   ])
   .reduce((cards, current) => [...cards, ...current], []);
 
@@ -65,34 +41,40 @@ const randomCard = () => {
   return cardDeck[index];
 };
 
-const nextCount = (prevCount, card) => {
-  if (card.rank < RANK_SEVEN) {
+const nextCount = (prevCount: number, { rank }: PlayingCard) => {
+  if (rank < 7) {
     return prevCount + 1;
-  } else if (card.rank > RANK_NINE) {
+  } else if (rank > 9) {
     return prevCount - 1;
   } else {
     return prevCount;
   }
 };
 
-const STATUS_PLAYING = "PLAYING";
-const STATUS_PENDING = "PENDING";
-const STATUS_FINISHED = "FINISHED";
+type PlayProps = {|
+  onBack: () => void,
+  onFinish: ({| drawnCards: number, count: number |}) => void
+|};
 
-class Play extends React.Component {
-  static propTypes = {
-    onBack: PropTypes.func.isRequired,
-    onFinish: PropTypes.func.isRequired
-  };
+type PlayState = {|
+  status: "playing" | "pending" | "finished",
+  remaining: number,
+  drawnCards: number,
+  currentCard: PlayingCard,
+  count: number
+|};
 
-  constructor(props) {
+class Play extends React.Component<PlayProps, PlayState> {
+  intervalId: null | IntervalID = null;
+
+  constructor(props: PlayProps) {
     super(props);
 
     const currentCard = randomCard();
     const count = nextCount(0, currentCard);
 
     this.state = {
-      status: STATUS_PLAYING,
+      status: "playing",
       remaining: GAME_DURATION_SECONDS,
       drawnCards: 1,
       currentCard,
@@ -100,24 +82,29 @@ class Play extends React.Component {
     };
   }
 
+  clearInterval() {
+    if (this.intervalId !== null) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
   componentDidMount() {
-    const updater = ({ status, remaining }) => {
-      if (status === STATUS_PLAYING) {
+    const updater = ({ status, remaining }: PlayState) => {
+      if (status === "playing") {
         if (remaining > 1) {
           return { remaining: remaining - 1 };
         } else {
-          return { status: STATUS_PENDING };
+          return { status: "pending" };
         }
-      } else if (status === STATUS_PENDING) {
-        return { status: STATUS_FINISHED };
+      } else if (status === "pending") {
+        return { status: "finished" };
       }
     };
 
     const callback = () => {
-      if (this.state.status === STATUS_FINISHED) {
-        clearInterval(this.intervalId);
-        this.intervalId = null;
-
+      if (this.state.status === "finished") {
+        this.clearInterval();
         this.props.onFinish({
           drawnCards: this.state.drawnCards,
           count: this.state.count
@@ -131,16 +118,14 @@ class Play extends React.Component {
   }
 
   componentWillUnmount() {
-    if (this.intervalId !== null) {
-      clearInterval(this.intervalId);
-    }
+    this.clearInterval();
   }
 
   handleCardClick = () => {
     const nextCard = randomCard();
 
     this.setState(({ status, drawnCards, count }) => {
-      if (status === STATUS_PLAYING) {
+      if (status === "playing") {
         return {
           drawnCards: drawnCards + 1,
           currentCard: nextCard,
@@ -150,7 +135,7 @@ class Play extends React.Component {
     });
   };
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps: PlayProps, nextState: PlayState) {
     const { props: prevProps, state: prevState } = this;
 
     return (
@@ -166,7 +151,7 @@ class Play extends React.Component {
         <Card
           isButton
           suit={this.state.currentCard.suit}
-          disabled={this.state.status !== STATUS_PLAYING}
+          disabled={this.state.status !== "playing"}
           onClick={this.handleCardClick}
         >
           <CardTitle>{rankToText(this.state.currentCard.rank)}</CardTitle>

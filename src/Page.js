@@ -1,8 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
+// @flow
+
+import * as React from "react";
 import "./Page.css";
 
-const Root = ({ children, ...props }) => (
+type HTMLProps = {
+  children?: React.Node
+};
+
+export const Root = ({ children, ...props }: HTMLProps) => (
   <div {...props} className="page">
     {children}
   </div>
@@ -51,7 +56,9 @@ const Diamonds = () => (
   </svg>
 );
 
-const cardClassName = suit => {
+export type Suit = "spades" | "hearts" | "clubs" | "diamonds";
+
+const cardClassName = (suit?: Suit) => {
   const baseClassName = `page__item page__item--expand page__card`;
 
   return suit === "hearts" || suit === "diamonds"
@@ -59,10 +66,10 @@ const cardClassName = suit => {
     : baseClassName;
 };
 
-const cardCornerClassName = direction =>
+const cardCornerClassName = (direction: "tl" | "tr" | "br" | "bl") =>
   `page__card__corner page__card__corner--${direction}`;
 
-const renderCardCorners = suit => {
+const renderCardCorners = (suit?: Suit) => {
   let corner = null;
   if (suit === "spades") {
     corner = <Spades />;
@@ -88,11 +95,17 @@ const renderCardCorners = suit => {
   }
 };
 
-const renderCardMain = children => (
+const renderCardMain = (children?: React.Node) => (
   <div className="page__card__main">{children}</div>
 );
 
-const Card = ({ isButton, suit, children, ...props }) => {
+type CardProps = {
+  isButton?: boolean,
+  suit?: Suit,
+  children?: React.Node
+};
+
+export const Card = ({ isButton, suit, children, ...props }: CardProps) => {
   if (isButton) {
     return (
       <button
@@ -114,75 +127,56 @@ const Card = ({ isButton, suit, children, ...props }) => {
   }
 };
 
-Card.propTypes = {
-  isButton: PropTypes.bool,
-  suit: PropTypes.oneOf(["spades", "hearts", "clubs", "diamonds"])
-};
-
-const CardTitle = ({ children, ...props }) => (
+export const CardTitle = ({ children, ...props }: HTMLProps) => (
   <h1 {...props} className="page__card__main__item page__title">
     {children}
   </h1>
 );
 
-const CardSubTitle = ({ children, ...props }) => (
+export const CardSubTitle = ({ children, ...props }: HTMLProps) => (
   <h2 {...props} className="page__card__main__item page__subtitle">
     {children}
   </h2>
 );
 
-const CardText = ({ children, ...props }) => (
+export const CardText = ({ children, ...props }: HTMLProps) => (
   <p {...props} className="page__card__main__item page__text">
     {children}
   </p>
 );
 
-const Row = ({ children, ...props }) => (
+export const Row = ({ children, ...props }: HTMLProps) => (
   <div {...props} className="page__item page__row">
     {children}
   </div>
 );
 
-const RowBtn = ({ children, ...props }) => (
+export const RowBtn = ({ children, ...props }: HTMLProps) => (
   <button {...props} type="button" className="page__row__item page__button">
     {children}
   </button>
 );
 
-const Link = ({ children, ...props }) => (
+export const Link = ({ children, ...props }: HTMLProps) => (
   <a {...props} className="page__link">
     {children}
   </a>
 );
 
-const Green = ({ children, ...props }) => (
+export const Green = ({ children, ...props }: HTMLProps) => (
   <span {...props} className="page__green">
     {children}
   </span>
 );
 
-const Red = ({ children, ...props }) => (
+export const Red = ({ children, ...props }: HTMLProps) => (
   <span {...props} className="page__red">
     {children}
   </span>
 );
 
-const Gray = ({ children, ...props }) => (
+export const Gray = ({ children, ...props }: HTMLProps) => (
   <span {...props} className="page__gray">
     {children}
   </span>
 );
-
-export {
-  Root,
-  Card,
-  CardTitle,
-  CardSubTitle,
-  CardText,
-  Row,
-  RowBtn,
-  Link,
-  Green,
-  Red,
-  Gray
-};

@@ -1,5 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
+// @flow
+
+import * as React from "react";
 import {
   Root,
   Card,
@@ -12,11 +13,18 @@ import {
   Gray
 } from "../Page";
 
-const renderCards = cardCount => (cardCount === 1 ? "card" : "cards");
+const renderCards = (cardCount: number) => (cardCount === 1 ? "card" : "cards");
 
-const renderCount = count => (count > 0 ? `+${count}` : `${count}`);
+const renderCount = (count: number) => (count > 0 ? `+${count}` : `${count}`);
 
-const renderSubTitle = (result, prevHighScore, realCount, userCount) => {
+export type GameResult = "highscore" | "won" | "lost";
+
+const renderSubTitle = (
+  result: GameResult,
+  prevHighScore: ?number,
+  realCount: number,
+  userCount: number
+) => {
   switch (result) {
     case "highscore":
       return (
@@ -59,6 +67,15 @@ const renderSubTitle = (result, prevHighScore, realCount, userCount) => {
   }
 };
 
+type ScoreProps = {|
+  result: GameResult,
+  prevHighScore: ?number,
+  drawnCards: number,
+  realCount: number,
+  userCount: number,
+  onBack: () => void
+|};
+
 const Score = ({
   result,
   prevHighScore,
@@ -66,7 +83,7 @@ const Score = ({
   realCount,
   userCount,
   onBack
-}) => (
+}: ScoreProps) => (
   <Root>
     <Card>
       <CardTitle>
@@ -83,14 +100,5 @@ const Score = ({
     </Row>
   </Root>
 );
-
-Score.propTypes = {
-  result: PropTypes.oneOf(["won", "lost", "highscore"]).isRequired,
-  prevHighScore: PropTypes.number,
-  drawnCards: PropTypes.number.isRequired,
-  realCount: PropTypes.number.isRequired,
-  userCount: PropTypes.number.isRequired,
-  onBack: PropTypes.func.isRequired
-};
 
 export default Score;

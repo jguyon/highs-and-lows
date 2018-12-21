@@ -1,12 +1,17 @@
-import React from "react";
-import PropTypes from "prop-types";
+// @flow
+
+import * as React from "react";
 import { Root, Card, CardTitle, Row, RowBtn } from "../Page";
 
-class AskForCount extends React.Component {
-  static propTypes = {
-    onFinish: PropTypes.func.isRequired
-  };
+type AskForCountProps = {|
+  onFinish: number => void
+|};
 
+type AskForCountState = {|
+  count: number
+|};
+
+class AskForCount extends React.Component<AskForCountProps, AskForCountState> {
   state = { count: 0 };
 
   handleMinusClick = () => {

@@ -1,4 +1,6 @@
-import React from "react";
+// @flow
+
+import * as React from "react";
 import Home from "./Home";
 import About from "./About";
 import Game from "./Game";
@@ -10,7 +12,7 @@ const getHighScore = () => {
   return isNaN(highScore) ? null : highScore;
 };
 
-const setHighScore = score => {
+const setHighScore = (score: number) => {
   try {
     localStorage.setItem(HIGH_SCORE_KEY, score.toString());
     return true;
@@ -20,29 +22,30 @@ const setHighScore = score => {
   }
 };
 
-const PAGE_HOME = "HOME";
-const PAGE_ABOUT = "ABOUT";
-const PAGE_GAME = "GAME";
+type AppState = {|
+  page: "home" | "about" | "game",
+  highScore: ?number
+|};
 
-class App extends React.Component {
+class App extends React.Component<{||}, AppState> {
   state = {
-    page: PAGE_HOME,
+    page: "home",
     highScore: getHighScore()
   };
 
   handlePlay = () => {
-    this.setState({ page: PAGE_GAME });
+    this.setState({ page: "game" });
   };
 
   handleAbout = () => {
-    this.setState({ page: PAGE_ABOUT });
+    this.setState({ page: "about" });
   };
 
   handleBack = () => {
-    this.setState({ page: PAGE_HOME });
+    this.setState({ page: "home" });
   };
 
-  handleNewHighScore = score => {
+  handleNewHighScore = (score: number) => {
     if (setHighScore(score)) {
       this.setState({ highScore: score });
     }
@@ -50,7 +53,7 @@ class App extends React.Component {
 
   render() {
     switch (this.state.page) {
-      case PAGE_HOME:
+      case "home":
         return (
           <Home
             highScore={this.state.highScore}
@@ -58,9 +61,11 @@ class App extends React.Component {
             onAbout={this.handleAbout}
           />
         );
-      case PAGE_ABOUT:
+
+      case "about":
         return <About onBack={this.handleBack} />;
-      case PAGE_GAME:
+
+      case "game":
         return (
           <Game
             highScore={this.state.highScore}
@@ -68,6 +73,7 @@ class App extends React.Component {
             onBack={this.handleBack}
           />
         );
+
       default:
         throw new Error(`invalid page: ${this.state.page}`);
     }

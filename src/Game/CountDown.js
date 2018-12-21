@@ -1,37 +1,47 @@
-import React from "react";
-import PropTypes from "prop-types";
+// @flow
+
+import * as React from "react";
 import { Root, Card, CardTitle, Row, RowBtn } from "../Page";
 
-const STATUS_COUNTING = "COUNTING";
-const STATUS_FINISHED = "FINISHED";
+type CountDownProps = {|
+  onBack: () => void,
+  onFinish: () => void
+|};
 
-class CountDown extends React.Component {
-  static propTypes = {
-    onBack: PropTypes.func.isRequired,
-    onFinish: PropTypes.func.isRequired
-  };
+type CountDownState = {|
+  status: "counting" | "finished",
+  remaining: number
+|};
+
+class CountDown extends React.Component<CountDownProps, CountDownState> {
+  intervalId: null | IntervalID = null;
 
   state = {
-    status: STATUS_COUNTING,
+    status: "counting",
     remaining: 3
   };
 
+  clearInterval() {
+    if (this.intervalId !== null) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
   componentDidMount() {
-    const updater = ({ status, remaining }) => {
-      if (status === STATUS_COUNTING) {
+    const updater = ({ status, remaining }: CountDownState) => {
+      if (status === "counting") {
         if (remaining > 1) {
           return { remaining: remaining - 1 };
         } else {
-          return { status: STATUS_FINISHED };
+          return { status: "finished" };
         }
       }
     };
 
     const callback = () => {
-      if (this.state.status === STATUS_FINISHED) {
-        clearInterval(this.intervalId);
-        this.intervalId = null;
-
+      if (this.state.status === "finished") {
+        this.clearInterval();
         this.props.onFinish();
       }
     };
@@ -42,9 +52,7 @@ class CountDown extends React.Component {
   }
 
   componentWillUnmount() {
-    if (this.intervalId !== null) {
-      clearInterval(this.intervalId);
-    }
+    this.clearInterval();
   }
 
   render() {

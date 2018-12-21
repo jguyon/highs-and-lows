@@ -1,59 +1,92 @@
-import React from "react";
-import PropTypes from "prop-types";
+// @flow
+
+import * as React from "react";
 import CountDown from "./CountDown";
 import Play from "./Play";
 import AskForCount from "./AskForCount";
 import Score from "./Score";
+import type { GameResult } from "./Score";
 
-const PHASE_COUNTDOWN = "COUNTDOWN";
-const PHASE_PLAY = "PLAY";
-const PHASE_ASKING_FOR_COUNT = "ASKING_FOR_COUNT";
-const PHASE_SCORING = "SCORING";
+type GameProps = {|
+  highScore: ?number,
+  onNewHighScore: number => void,
+  onBack: () => void
+|};
 
-class Game extends React.Component {
-  static propTypes = {
-    highScore: PropTypes.number,
-    onNewHighScore: PropTypes.func.isRequired,
-    onBack: PropTypes.func.isRequired
-  };
+type PhaseCountDown = {|
+  type: "countdown"
+|};
 
+type PhasePlay = {|
+  type: "play"
+|};
+
+type PhaseAskForCount = {|
+  type: "askforcount",
+  drawnCards: number,
+  realCount: number
+|};
+
+type PhaseScore = {|
+  type: "score",
+  result: GameResult,
+  prevHighScore: ?number,
+  drawnCards: number,
+  realCount: number,
+  userCount: number
+|};
+
+type GameState = {|
+  phase: PhaseCountDown | PhasePlay | PhaseAskForCount | PhaseScore
+|};
+
+class Game extends React.Component<GameProps, GameState> {
   state = {
     phase: {
-      type: PHASE_COUNTDOWN
+      type: "countdown"
     }
   };
 
   handleCountDownFinish = () => {
     this.setState({
       phase: {
-        type: PHASE_PLAY
+        type: "play"
       }
     });
   };
 
-  handlePlayFinish = ({ drawnCards, count: realCount }) => {
+  handlePlayFinish = ({
+    drawnCards,
+    count: realCount
+  }: {|
+    drawnCards: number,
+    count: number
+  |}) => {
     this.setState({
       phase: {
-        type: PHASE_ASKING_FOR_COUNT,
+        type: "askforcount",
         drawnCards,
         realCount
       }
     });
   };
 
-  handleAskForCountFinish = userCount => {
+  handleAskForCountFinish = (userCount: number) => {
     this.setState(
       ({ phase }, { highScore }) => {
-        if (phase.type === PHASE_ASKING_FOR_COUNT) {
-          let result = "lost";
+        if (phase.type === "askforcount") {
+          let result: GameResult = "lost";
           if (userCount === phase.realCount) {
-            result =
-              !highScore || phase.drawnCards > highScore ? "highscore" : "won";
+            if (!highScore || phase.drawnCards > highScore) {
+              result = "highscore";
+            } else {
+              result = "won";
+            }
           }
 
           return {
             phase: {
-              type: PHASE_SCORING,
+              type: "score",
               result,
               prevHighScore: highScore,
               drawnCards: phase.drawnCards,
@@ -66,14 +99,14 @@ class Game extends React.Component {
       () => {
         const { phase } = this.state;
 
-        if (phase.type === PHASE_SCORING && phase.result === "highscore") {
+        if (phase.type === "score" && phase.result === "highscore") {
           this.props.onNewHighScore(phase.drawnCards);
         }
       }
     );
   };
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps: GameProps, nextState: GameState) {
     const { props: prevProps, state: prevState } = this;
 
     return (
@@ -87,15 +120,18 @@ class Game extends React.Component {
     const { onBack } = this.props;
 
     switch (phase.type) {
-      case PHASE_COUNTDOWN:
+      case "countdown":
         return (
           <CountDown onBack={onBack} onFinish={this.handleCountDownFinish} />
         );
-      case PHASE_PLAY:
+
+      case "play":
         return <Play onBack={onBack} onFinish={this.handlePlayFinish} />;
-      case PHASE_ASKING_FOR_COUNT:
+
+      case "askforcount":
         return <AskForCount onFinish={this.handleAskForCountFinish} />;
-      case PHASE_SCORING:
+
+      case "score":
         return (
           <Score
             result={phase.result}
@@ -106,6 +142,7 @@ class Game extends React.Component {
             onBack={onBack}
           />
         );
+
       default:
         throw new Error(`invalid phase type: ${phase.type}`);
     }

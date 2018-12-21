@@ -1,8 +1,15 @@
-import React from "react";
-import PropTypes from "prop-types";
+// @flow
+
+import * as React from "react";
 import { Root, Card, CardTitle, CardSubTitle, Row, RowBtn } from "./Page";
 
-const Home = ({ highScore, onPlay, onAbout }) => (
+type HomeProps = {|
+  highScore: ?number,
+  onPlay: () => void,
+  onAbout: () => void
+|};
+
+const Home = ({ highScore, onPlay, onAbout }: HomeProps) => (
   <Root>
     <Card>
       <CardTitle>
@@ -26,11 +33,5 @@ const Home = ({ highScore, onPlay, onAbout }) => (
     </Row>
   </Root>
 );
-
-Home.propTypes = {
-  highScore: PropTypes.number,
-  onPlay: PropTypes.func.isRequired,
-  onAbout: PropTypes.func.isRequired
-};
 
 export default Home;

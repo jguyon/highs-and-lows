@@ -1,9 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
+// @flow
+
+import * as React from "react";
 import { GAME_DURATION_SECONDS } from "./constants";
 import { Root, Card, CardText, Row, RowBtn, Link } from "./Page";
 
-const About = ({ onBack }) => (
+type AboutProps = {|
+  onBack: () => void
+|};
+
+const About = ({ onBack }: AboutProps) => (
   <Root>
     <Card>
       <CardText>
@@ -39,9 +44,5 @@ const About = ({ onBack }) => (
     </Row>
   </Root>
 );
-
-About.propTypes = {
-  onBack: PropTypes.func.isRequired
-};
 
 export default About;
