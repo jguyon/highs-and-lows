@@ -13,60 +13,62 @@ type CountDownState = {|
   remaining: number
 |};
 
-class CountDown extends React.Component<CountDownProps, CountDownState> {
-  intervalId: null | IntervalID = null;
+type CountDownAction = "tick";
 
-  state = {
-    status: "counting",
-    remaining: 3
-  };
+const initialCountDownState: CountDownState = {
+  status: "counting",
+  remaining: 3
+};
 
-  clearInterval() {
-    if (this.intervalId !== null) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
+const countDownReducer = (
+  state: CountDownState,
+  action: CountDownAction
+): CountDownState => {
+  if (state.status === "counting") {
+    if (state.remaining > 1) {
+      return { ...state, remaining: state.remaining - 1 };
+    } else {
+      return { ...state, status: "finished" };
     }
+  } else {
+    return state;
   }
+};
 
-  componentDidMount() {
-    const updater = ({ status, remaining }: CountDownState) => {
-      if (status === "counting") {
-        if (remaining > 1) {
-          return { remaining: remaining - 1 };
-        } else {
-          return { status: "finished" };
-        }
+const CountDown = ({ onBack, onFinish }: CountDownProps) => {
+  const [{ status, remaining }, dispatch] = React.useReducer(
+    countDownReducer,
+    initialCountDownState
+  );
+
+  React.useEffect(
+    () => {
+      switch (status) {
+        case "counting":
+          const id = setInterval(() => dispatch("tick"), 1000);
+          return () => clearInterval(id);
+
+        case "finished":
+          onFinish();
+          return;
+
+        default:
+          throw new Error(`invalid status: ${status}`);
       }
-    };
+    },
+    [status]
+  );
 
-    const callback = () => {
-      if (this.state.status === "finished") {
-        this.clearInterval();
-        this.props.onFinish();
-      }
-    };
-
-    this.intervalId = setInterval(() => {
-      this.setState(updater, callback);
-    }, 1000);
-  }
-
-  componentWillUnmount() {
-    this.clearInterval();
-  }
-
-  render() {
-    return (
-      <Root>
-        <Card>
-          <CardTitle>{this.state.remaining}</CardTitle>
-        </Card>
-        <Row>
-          <RowBtn onClick={this.props.onBack}>BACK</RowBtn>
-        </Row>
-      </Root>
-    );
-  }
-}
+  return (
+    <Root>
+      <Card>
+        <CardTitle>{remaining}</CardTitle>
+      </Card>
+      <Row>
+        <RowBtn onClick={onBack}>BACK</RowBtn>
+      </Row>
+    </Root>
+  );
+};
 
 export default CountDown;
