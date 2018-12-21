@@ -7,12 +7,6 @@ import AskForCount from "./AskForCount";
 import Score from "./Score";
 import type { GameResult } from "./Score";
 
-type GameProps = {|
-  highScore: ?number,
-  onNewHighScore: number => void,
-  onBack: () => void
-|};
-
 type PhaseCountDown = {|
   type: "countdown"
 |};
@@ -36,117 +30,144 @@ type PhaseScore = {|
   userCount: number
 |};
 
-type GameState = {|
-  phase: PhaseCountDown | PhasePlay | PhaseAskForCount | PhaseScore
+type Phase = PhaseCountDown | PhasePlay | PhaseAskForCount | PhaseScore;
+
+type PhaseActionFinishCountDown = {|
+  type: "finish-countdown"
 |};
 
-class Game extends React.Component<GameProps, GameState> {
-  state = {
-    phase: {
-      type: "countdown"
-    }
-  };
+type PhaseActionFinishPlay = {|
+  type: "finish-play",
+  drawnCards: number,
+  realCount: number
+|};
 
-  handleCountDownFinish = () => {
-    this.setState({
-      phase: {
+type PhaseActionFinishAskForCount = {|
+  type: "finish-askforcount",
+  userCount: number
+|};
+
+type PhaseAction =
+  | PhaseActionFinishCountDown
+  | PhaseActionFinishPlay
+  | PhaseActionFinishAskForCount;
+
+const initialPhase: Phase = { type: "countdown" };
+
+const makePhaseReducer = (highScore: ?number) => (
+  phase: Phase,
+  action: PhaseAction
+): Phase => {
+  switch (action.type) {
+    case "finish-countdown":
+      return {
         type: "play"
-      }
-    });
-  };
+      };
 
-  handlePlayFinish = ({
-    drawnCards,
-    count: realCount
-  }: {|
-    drawnCards: number,
-    count: number
-  |}) => {
-    this.setState({
-      phase: {
+    case "finish-play":
+      const { drawnCards, realCount } = action;
+
+      return {
         type: "askforcount",
         drawnCards,
         realCount
-      }
-    });
-  };
+      };
 
-  handleAskForCountFinish = (userCount: number) => {
-    this.setState(
-      ({ phase }, { highScore }) => {
-        if (phase.type === "askforcount") {
-          let result: GameResult = "lost";
-          if (userCount === phase.realCount) {
-            if (!highScore || phase.drawnCards > highScore) {
-              result = "highscore";
-            } else {
-              result = "won";
-            }
+    case "finish-askforcount":
+      if (phase.type === "askforcount") {
+        const { drawnCards, realCount } = phase;
+        const { userCount } = action;
+
+        let result: GameResult = "lost";
+        if (userCount === realCount) {
+          if (!highScore || drawnCards > highScore) {
+            result = "highscore";
+          } else {
+            result = "won";
           }
-
-          return {
-            phase: {
-              type: "score",
-              result,
-              prevHighScore: highScore,
-              drawnCards: phase.drawnCards,
-              realCount: phase.realCount,
-              userCount
-            }
-          };
         }
-      },
-      () => {
-        const { phase } = this.state;
 
-        if (phase.type === "score" && phase.result === "highscore") {
-          this.props.onNewHighScore(phase.drawnCards);
-        }
+        return {
+          type: "score",
+          result,
+          drawnCards,
+          prevHighScore: highScore,
+          realCount,
+          userCount
+        };
+      } else {
+        return phase;
       }
-    );
-  };
 
-  shouldComponentUpdate(nextProps: GameProps, nextState: GameState) {
-    const { props: prevProps, state: prevState } = this;
-
-    return (
-      nextState.phase !== prevState.phase ||
-      nextProps.onBack !== prevProps.onBack
-    );
+    default:
+      throw new Error(`invalid action type: ${action.type}`);
   }
+};
 
-  render() {
-    const { phase } = this.state;
-    const { onBack } = this.props;
+type GameProps = {|
+  highScore: ?number,
+  onNewHighScore: number => void,
+  onBack: () => void
+|};
 
-    switch (phase.type) {
-      case "countdown":
-        return (
-          <CountDown onBack={onBack} onFinish={this.handleCountDownFinish} />
-        );
+const Game = ({ highScore, onNewHighScore, onBack }: GameProps) => {
+  const [phase, phaseDispatch] = React.useReducer(
+    makePhaseReducer(highScore),
+    initialPhase
+  );
 
-      case "play":
-        return <Play onBack={onBack} onFinish={this.handlePlayFinish} />;
+  switch (phase.type) {
+    case "countdown":
+      return (
+        <CountDown
+          onFinish={() => phaseDispatch({ type: "finish-countdown" })}
+          onBack={onBack}
+        />
+      );
 
-      case "askforcount":
-        return <AskForCount onFinish={this.handleAskForCountFinish} />;
+    case "play":
+      return (
+        <Play
+          onFinish={({ drawnCards, count: realCount }) =>
+            phaseDispatch({
+              type: "finish-play",
+              drawnCards,
+              realCount
+            })
+          }
+          onBack={onBack}
+        />
+      );
 
-      case "score":
-        return (
-          <Score
-            result={phase.result}
-            prevHighScore={phase.prevHighScore}
-            drawnCards={phase.drawnCards}
-            realCount={phase.realCount}
-            userCount={phase.userCount}
-            onBack={onBack}
-          />
-        );
+    case "askforcount":
+      return (
+        <AskForCount
+          onFinish={(userCount: number) =>
+            phaseDispatch({
+              type: "finish-askforcount",
+              userCount
+            })
+          }
+        />
+      );
 
-      default:
-        throw new Error(`invalid phase type: ${phase.type}`);
-    }
+    case "score":
+      const { result, prevHighScore, drawnCards, realCount, userCount } = phase;
+
+      return (
+        <Score
+          result={result}
+          prevHighScore={prevHighScore}
+          drawnCards={drawnCards}
+          realCount={realCount}
+          userCount={userCount}
+          onBack={onBack}
+        />
+      );
+
+    default:
+      throw new Error(`invalid phase type: ${phase.type}`);
   }
-}
+};
 
 export default Game;
