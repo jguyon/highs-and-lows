@@ -116,58 +116,78 @@ const Game = ({ highScore, onNewHighScore, onBack }: GameProps) => {
     initialPhase
   );
 
-  switch (phase.type) {
-    case "countdown":
-      return (
-        <CountDown
-          onFinish={() => phaseDispatch({ type: "finish-countdown" })}
-          onBack={onBack}
-        />
-      );
+  React.useEffect(
+    () => {
+      if (phase.type === "score" && phase.result === "highscore") {
+        onNewHighScore(phase.drawnCards);
+      }
+    },
+    [phase]
+  );
 
-    case "play":
-      return (
-        <Play
-          onFinish={({ drawnCards, count: realCount }) =>
-            phaseDispatch({
-              type: "finish-play",
-              drawnCards,
-              realCount
-            })
-          }
-          onBack={onBack}
-        />
-      );
+  return React.useMemo(
+    () => {
+      switch (phase.type) {
+        case "countdown":
+          return (
+            <CountDown
+              onFinish={() => phaseDispatch({ type: "finish-countdown" })}
+              onBack={onBack}
+            />
+          );
 
-    case "askforcount":
-      return (
-        <AskForCount
-          onFinish={(userCount: number) =>
-            phaseDispatch({
-              type: "finish-askforcount",
-              userCount
-            })
-          }
-        />
-      );
+        case "play":
+          return (
+            <Play
+              onFinish={({ drawnCards, count: realCount }) =>
+                phaseDispatch({
+                  type: "finish-play",
+                  drawnCards,
+                  realCount
+                })
+              }
+              onBack={onBack}
+            />
+          );
 
-    case "score":
-      const { result, prevHighScore, drawnCards, realCount, userCount } = phase;
+        case "askforcount":
+          return (
+            <AskForCount
+              onFinish={(userCount: number) =>
+                phaseDispatch({
+                  type: "finish-askforcount",
+                  userCount
+                })
+              }
+            />
+          );
 
-      return (
-        <Score
-          result={result}
-          prevHighScore={prevHighScore}
-          drawnCards={drawnCards}
-          realCount={realCount}
-          userCount={userCount}
-          onBack={onBack}
-        />
-      );
+        case "score":
+          const {
+            result,
+            prevHighScore,
+            drawnCards,
+            realCount,
+            userCount
+          } = phase;
 
-    default:
-      throw new Error(`invalid phase type: ${phase.type}`);
-  }
+          return (
+            <Score
+              result={result}
+              prevHighScore={prevHighScore}
+              drawnCards={drawnCards}
+              realCount={realCount}
+              userCount={userCount}
+              onBack={onBack}
+            />
+          );
+
+        default:
+          throw new Error(`invalid phase type: ${phase.type}`);
+      }
+    },
+    [phase, onBack]
+  );
 };
 
 export default Game;

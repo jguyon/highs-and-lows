@@ -28,6 +28,8 @@ const App = () => {
   const [page, setPage] = React.useState<PageState>("home");
   const [highScore, setHighScore] = React.useState(getStorageHighScore);
 
+  const onBack = React.useCallback(() => setPage("home"), []);
+
   switch (page) {
     case "home":
       return (
@@ -39,7 +41,7 @@ const App = () => {
       );
 
     case "about":
-      return <About onBack={() => setPage("home")} />;
+      return <About onBack={onBack} />;
 
     case "game":
       return (
@@ -50,7 +52,7 @@ const App = () => {
               setHighScore(score);
             }
           }}
-          onBack={() => setPage("home")}
+          onBack={onBack}
         />
       );
 
