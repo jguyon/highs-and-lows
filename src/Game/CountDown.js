@@ -59,14 +59,28 @@ const CountDown = ({ onBack, onFinish }: CountDownProps) => {
     [status]
   );
 
-  return (
-    <Root>
+  const card = React.useMemo(
+    () => (
       <Card>
         <CardTitle>{remaining}</CardTitle>
       </Card>
+    ),
+    [remaining]
+  );
+
+  const row = React.useMemo(
+    () => (
       <Row>
         <RowBtn onClick={onBack}>BACK</RowBtn>
       </Row>
+    ),
+    [onBack]
+  );
+
+  return (
+    <Root>
+      {card}
+      {row}
     </Root>
   );
 };
