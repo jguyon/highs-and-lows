@@ -17,7 +17,7 @@ const ICON_CLASS_NAME = "page__card__corner__icon";
 const ICON_FILL_CLASS_NAME = "page__card__corner__icon__fill";
 
 // https://www.flaticon.com/free-icon/spades_220760
-const Spades = () => (
+const SPADES_ICON = (
   <svg className={ICON_CLASS_NAME} viewBox="0 0 511.96 511.96">
     <path
       className={ICON_FILL_CLASS_NAME}
@@ -27,7 +27,7 @@ const Spades = () => (
 );
 
 // https://www.flaticon.com/free-icon/hearts_220759
-const Hearts = () => (
+const HEARTS_ICON = (
   <svg className={ICON_CLASS_NAME} viewBox="0 0 510.977 510.977">
     <path
       className={ICON_FILL_CLASS_NAME}
@@ -37,7 +37,7 @@ const Hearts = () => (
 );
 
 // https://www.flaticon.com/free-icon/clubs_220757
-const Clubs = () => (
+const CLUBS_ICON = (
   <svg className={ICON_CLASS_NAME} viewBox="0 0 511.998 511.998">
     <path
       className={ICON_FILL_CLASS_NAME}
@@ -47,7 +47,7 @@ const Clubs = () => (
 );
 
 // https://www.flaticon.com/free-icon/diamonds_220758
-const Diamonds = () => (
+const DIAMONDS_ICON = (
   <svg className={ICON_CLASS_NAME} viewBox="0 0 512 512">
     <polygon
       className={ICON_FILL_CLASS_NAME}
@@ -72,13 +72,13 @@ const cardCornerClassName = (direction: "tl" | "tr" | "br" | "bl") =>
 const renderCardCorners = (suit?: Suit) => {
   let corner = null;
   if (suit === "spades") {
-    corner = <Spades />;
+    corner = SPADES_ICON;
   } else if (suit === "hearts") {
-    corner = <Hearts />;
+    corner = HEARTS_ICON;
   } else if (suit === "clubs") {
-    corner = <Clubs />;
+    corner = CLUBS_ICON;
   } else if (suit === "diamonds") {
-    corner = <Diamonds />;
+    corner = DIAMONDS_ICON;
   }
 
   if (corner === null) {
