@@ -143,8 +143,8 @@ const Play = ({ onBack, onFinish }: PlayProps) => {
     [state.status === "playing" || state.status === "pending"]
   );
 
-  return (
-    <Root>
+  const card = React.useMemo(
+    () => (
       <Card
         isButton
         suit={state.currentCard.suit}
@@ -158,9 +158,23 @@ const Play = ({ onBack, onFinish }: PlayProps) => {
       >
         <CardTitle>{rankToText(state.currentCard.rank)}</CardTitle>
       </Card>
+    ),
+    [state.currentCard, state.status !== "playing"]
+  );
+
+  const row = React.useMemo(
+    () => (
       <Row>
         <RowBtn onClick={onBack}>BACK</RowBtn>
       </Row>
+    ),
+    [onBack]
+  );
+
+  return (
+    <Root>
+      {card}
+      {row}
     </Root>
   );
 };
