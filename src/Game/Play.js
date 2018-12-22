@@ -123,32 +123,35 @@ type PlayProps = {|
 |};
 
 const Play = ({ onBack, onFinish }: PlayProps) => {
-  const [state, dispatch] = React.useReducer(playReducer, initialPlayState, {
+  const [
+    { status, drawnCards, currentCard, count },
+    dispatch
+  ] = React.useReducer(playReducer, initialPlayState, {
     type: "nextcard",
     nextCard: randomCard()
   });
 
   React.useEffect(
     () => {
-      if (state.status === "playing" || state.status === "pending") {
+      if (status === "playing" || status === "pending") {
         const id = setInterval(() => dispatch({ type: "tick" }), 1000);
         return () => clearInterval(id);
-      } else if (state.status === "finished") {
+      } else if (status === "finished") {
         onFinish({
-          drawnCards: state.drawnCards,
-          count: state.count
+          drawnCards,
+          count
         });
       }
     },
-    [state.status === "playing" || state.status === "pending"]
+    [status === "playing" || status === "pending"]
   );
 
   const card = React.useMemo(
     () => (
       <Card
         isButton
-        suit={state.currentCard.suit}
-        disabled={state.status !== "playing"}
+        suit={currentCard.suit}
+        disabled={status !== "playing"}
         onClick={() =>
           dispatch({
             type: "nextcard",
@@ -156,10 +159,10 @@ const Play = ({ onBack, onFinish }: PlayProps) => {
           })
         }
       >
-        <CardTitle>{rankToText(state.currentCard.rank)}</CardTitle>
+        <CardTitle>{rankToText(currentCard.rank)}</CardTitle>
       </Card>
     ),
-    [state.currentCard, state.status !== "playing"]
+    [currentCard, status !== "playing"]
   );
 
   const row = React.useMemo(
