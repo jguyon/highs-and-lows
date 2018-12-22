@@ -51,11 +51,6 @@ const nextCount = (prevCount: number, { rank }: PlayingCard) => {
   }
 };
 
-type PlayProps = {|
-  onBack: () => void,
-  onFinish: ({| drawnCards: number, count: number |}) => void
-|};
-
 type PlayState = {|
   status: "playing" | "pending" | "finished",
   remaining: number,
@@ -64,104 +59,110 @@ type PlayState = {|
   count: number
 |};
 
-class Play extends React.Component<PlayProps, PlayState> {
-  intervalId: null | IntervalID = null;
+const initialPlayState: PlayState = {
+  status: "playing",
+  remaining: GAME_DURATION_SECONDS,
+  drawnCards: 0,
+  currentCard: cardDeck[0],
+  count: 0
+};
 
-  constructor(props: PlayProps) {
-    super(props);
+type PlayActionTick = {|
+  type: "tick"
+|};
 
-    const currentCard = randomCard();
-    const count = nextCount(0, currentCard);
+type PlayActionNextCard = {|
+  type: "nextcard",
+  nextCard: PlayingCard
+|};
 
-    this.state = {
-      status: "playing",
-      remaining: GAME_DURATION_SECONDS,
-      drawnCards: 1,
-      currentCard,
-      count
-    };
-  }
+type PlayAction = PlayActionTick | PlayActionNextCard;
 
-  clearInterval() {
-    if (this.intervalId !== null) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
-    }
-  }
+const playReducer = (state: PlayState, action: PlayAction): PlayState => {
+  switch (action.type) {
+    case "tick": {
+      const { status, remaining } = state;
 
-  componentDidMount() {
-    const updater = ({ status, remaining }: PlayState) => {
       if (status === "playing") {
         if (remaining > 1) {
-          return { remaining: remaining - 1 };
+          return { ...state, remaining: remaining - 1 };
         } else {
-          return { status: "pending" };
+          return { ...state, status: "pending" };
         }
       } else if (status === "pending") {
-        return { status: "finished" };
+        return { ...state, status: "finished" };
+      } else {
+        return state;
       }
-    };
+    }
 
-    const callback = () => {
-      if (this.state.status === "finished") {
-        this.clearInterval();
-        this.props.onFinish({
-          drawnCards: this.state.drawnCards,
-          count: this.state.count
-        });
-      }
-    };
+    case "nextcard": {
+      const { nextCard } = action;
+      const { status, drawnCards, count } = state;
 
-    this.intervalId = setInterval(() => {
-      this.setState(updater, callback);
-    }, 1000);
-  }
-
-  componentWillUnmount() {
-    this.clearInterval();
-  }
-
-  handleCardClick = () => {
-    const nextCard = randomCard();
-
-    this.setState(({ status, drawnCards, count }) => {
       if (status === "playing") {
         return {
+          ...state,
           drawnCards: drawnCards + 1,
           currentCard: nextCard,
           count: nextCount(count, nextCard)
         };
+      } else {
+        return state;
       }
-    });
-  };
+    }
 
-  shouldComponentUpdate(nextProps: PlayProps, nextState: PlayState) {
-    const { props: prevProps, state: prevState } = this;
-
-    return (
-      nextProps.onBack !== prevProps.onBack ||
-      nextState.currentCard !== prevState.currentCard ||
-      nextState.status !== prevState.status
-    );
+    default:
+      throw new Error(`invalid action: ${action.type}`);
   }
+};
 
-  render() {
-    return (
-      <Root>
-        <Card
-          isButton
-          suit={this.state.currentCard.suit}
-          disabled={this.state.status !== "playing"}
-          onClick={this.handleCardClick}
-        >
-          <CardTitle>{rankToText(this.state.currentCard.rank)}</CardTitle>
-        </Card>
-        <Row>
-          <RowBtn onClick={this.props.onBack}>BACK</RowBtn>
-        </Row>
-      </Root>
-    );
-  }
-}
+type PlayProps = {|
+  onBack: () => void,
+  onFinish: ({| drawnCards: number, count: number |}) => void
+|};
+
+const Play = ({ onBack, onFinish }: PlayProps) => {
+  const [state, dispatch] = React.useReducer(playReducer, initialPlayState, {
+    type: "nextcard",
+    nextCard: randomCard()
+  });
+
+  React.useEffect(
+    () => {
+      if (state.status === "playing" || state.status === "pending") {
+        const id = setInterval(() => dispatch({ type: "tick" }), 1000);
+        return () => clearInterval(id);
+      } else if (state.status === "finished") {
+        onFinish({
+          drawnCards: state.drawnCards,
+          count: state.count
+        });
+      }
+    },
+    [state.status === "playing" || state.status === "pending"]
+  );
+
+  return (
+    <Root>
+      <Card
+        isButton
+        suit={state.currentCard.suit}
+        disabled={state.status !== "playing"}
+        onClick={() =>
+          dispatch({
+            type: "nextcard",
+            nextCard: randomCard()
+          })
+        }
+      >
+        <CardTitle>{rankToText(state.currentCard.rank)}</CardTitle>
+      </Card>
+      <Row>
+        <RowBtn onClick={onBack}>BACK</RowBtn>
+      </Row>
+    </Root>
+  );
+};
 
 export default Play;
